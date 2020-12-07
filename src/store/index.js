@@ -1,12 +1,8 @@
-import { createStore } from 'vuex'
+import { createStore } from 'vuex';
+import links from './modules/links';
 
 export default createStore({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
   modules: {
-  }
-})
+    links
+  },
+});
