@@ -2,11 +2,11 @@
   <div class="container">
     <MyHeader />
     <main>
-      <MyForm @hinzufuegen="hinzufuegen" />
+      <MyForm />
       <ul class="list-group">
         <li
           class="list-group-item d-flex justify-content-between"
-          v-for="link in links"
+          v-for="link in this.$store.getters.links.data"
           :key="link.id"
         >
           <a :href="link.url">{{ link.linktext }}</a>
@@ -48,94 +48,17 @@ export default {
     MyHeader,
     MyForm,
   },
-  data() {
-    return {
-      links: [
-        {
-          id: 0,
-          linktext: "kohnlehome.de",
-          url: "http://kohnlehome.de",
-          votes: 1,
-        },
-        {
-          id: 1,
-          linktext: "Offizielle Website der GBS",
-          url: "https://gbsschulen.de",
-          votes: 3,
-        },
-      ],
-    };
-  },
-  computed: {
-    maxId() {
-      let maximum = -1;
-      if (this.links.length > 0) {
-        maximum = this.links[0].id;
-        for (let i = 1; i < this.links.length; i++) {
-          const aktuellerLink = this.links[i];
-          if (aktuellerLink.id > maximum) {
-            maximum = aktuellerLink.id;
-          }
-        }
-      }
-      return maximum;
-    },
-  },
   methods: {
     upvote(id) {
-      console.log("+");
-      //this.links[id].votes++; Funktioniert nicht, wenn umsortiert wurde
-      const clickedLink = this.links.find((link) => link.id === id);
-      clickedLink.votes++;
-      this.sortieren();
-      this.speichern();
+      this.$store.dispatch('upvote', id);
     },
     deleteLink(id) {
-      // index des zu löschenden Links ermitteln
-      let index = this.links.findIndex((link) => link.id === id);
-      // Element an der Stelle index aus Array entfernen
-      this.links.splice(index, 1);
-      this.speichern();
-    },
-    sortieren() {
-      this.links.sort(function (link1, link2) {
-        return link2.votes - link1.votes;
-      });
-    },
-    laden() {
-      if (localStorage.getItem("links")) {
-        const linksString = localStorage.getItem("links");
-        this.links = JSON.parse(linksString);
-      } else {
-        this.links = [
-          {
-            id: 0,
-            linktext: "kohnlehome.de",
-            url: "http://kohnlehome.de",
-            votes: 1,
-          },
-          {
-            id: 1,
-            linktext: "Offizielle Website der GBS",
-            url: "https://gbsschulen.de",
-            votes: 3,
-          },
-        ];
-      }
-    },
-    speichern() {
-      const linksString = JSON.stringify(this.links);
-      localStorage.setItem("links", linksString);
-    },
-    hinzufuegen(newLink) {
-      newLink.id = this.maxId + 1;
-      this.links.push(newLink);
-      this.speichern();
+      this.$store.dispatch('deleteLink', id);
     },
   },
   mounted() {
-    this.laden();
-    this.sortieren();
+    this.$store.dispatch('laden');
+    this.$store.dispatch('sortieren');
   },
 };
 </script>

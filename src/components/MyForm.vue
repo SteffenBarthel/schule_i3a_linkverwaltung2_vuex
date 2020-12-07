@@ -45,14 +45,7 @@ export default {
   },
   methods: {
     hinzufuegen() {
-      if (this.newName != "" && this.newUrl != "") {
-        this.newLink = {
-          linktext: this.newName,
-          url: this.newUrl,
-          votes: 0,
-        };
-        this.$emit("hinzufuegen", this.newLink);
-      }
+      this.$store.dispatch('hinzufuegen', { newName: this.newName, newUrl: this.newUrl });
     },
   },
 };
