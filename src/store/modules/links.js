@@ -36,8 +36,6 @@ const actions = {
         } else {
             context.commit('setLinks', state.links.default);
         }
-
-        console.log(state.links.data);
     },
     speichern() {
         const linksString = JSON.stringify(state.links.data);
